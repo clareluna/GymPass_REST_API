@@ -1,0 +1,23 @@
+{
+  "name": "single_resource_rest_api",
+  "version": "0.1.0",
+  "description": "server capable of handling minor rest function",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clareluna/single_resource_REST_API.git"
+  },
+  "author": "Clare Monahan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/clareluna/single_resource_REST_API/issues"
+  },
+  "homepage": "https://github.com/clareluna/single_resource_REST_API#readme"
+}
