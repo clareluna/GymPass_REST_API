@@ -23,14 +23,14 @@ describe('the gym membership resource', function() {
 			.get('/gymPass')
 			.end(function(err, res){
 				expect(err).to.eql(null);
-				expect(Array.isArray(res.body)).to.eql(true); // need to find a way to /first name to get this to eql true
+				expect(Array.isArray(res.body)).to.eql(true); 
 				done();
 		});
 	});
 
 	it('should be able to get a class section', function(done) {
 		chai.request(url)
-			.get('/gymPass')//should these be the key values
+			.get('/gymPass')
 			.end(function(err, res) {
 				expect(err).to.eql(null);
 				expect(Array.isArray(res.body)).to.eql(true);
@@ -65,24 +65,37 @@ describe('deducting punches or adding classes', function() {
 		testTucker.save(function(err, data) {
 			if(err) return err;
 			this.testTucker = data;
-			console.log(data);
 			done();
 		}.bind(this));
 	});
 
-	it('should be able to deduct a punch per class the user attends', function(err, res) {
+	it('should be able to deduct a punch per class the user attends', function(done) {
 		chai.request(url)
-		.put('/gymPass/' + this.testTucker._id)
-		.send({
-			firstName: 'Dexter',
-			classes: 'tennis ball fetching',
-			punchPass: 4
-		})
-		.end(function(err, res) {
-			expect(err).to.eql(null);
-			expect(res.body.punchPass).to.eql(4); //coming back undefinded
-			done();
-		});
+			.put('/gymPass/' + this.testTucker._id)
+			.send({
+				firstName: 'Tucker',
+				classes: 'annoying Dexter',
+				punchPass: 4
+			})
+			.end(function(err, res) {
+				expect(err).to.eql(null);
+				expect(res.body.punchPass).to.eql(4); //coming back undefinded
+				done();
+			});
+	});
+
+	it('should be able to change class selection', function(done) {
+		chai.request(url)
+			.put('/gymPass/' + this.testTucker._id)
+			.send({ firstName: 'Tucker',
+					classes: 'tail chasing',
+					punchPass: 4
+				})
+			.end(function(err, res) {
+				expect(err).to.eql(null);
+				expect(res.body.classes).to.eql('tail chasing');
+				done();
+			});
 	});
 });
 

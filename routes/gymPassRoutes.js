@@ -21,26 +21,12 @@ gymPassRoute.post('/gymPass', jsonParser, function(req, res) {
 	});
 });
 
-gymPassRoute.put('/gymPass/:update', jsonParser, function(req,res) {
+gymPassRoute.put('/gymPass/:id', jsonParser, function(req,res) {
 	var updateMember = req.body;
-	delete updateMember._update;
-	GymPass.update({_update: req.params.update}, updateMember, function(err, data) {
+	delete updateMember._id;
+	GymPass.update({_id: req.params.id}, updateMember, function(err, data) {
 		if (err) return handleError(err, res);
-		res.json({msg: "a sucessful update took place"});
+		res.send(updateMember);
 	});
 });
 
-gymPassRoute.delete('/gymPass/:deleteData', function(req, res) {
-	GymPass.remove({_deleteData: req.params.deleteData}, function(err) {
-		if (err) return handleError(err, res);
-		res.json({msg: "sucessfully removed " + _deleteData});
-	});
-});
-
-// gymPassRoute.get('/classes', function(req, res) {
-// 	GymPass.static('find classes', function(name, callback) {
-// 		return.this.find({classes: name}, callback);
-// 	});
-// });// needs work
-
-//include modifications of punchpass
