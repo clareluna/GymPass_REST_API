@@ -9,8 +9,3 @@ var port = process.env.PORT || 3000;
 app.listen(port, function(){
 	console.log('server listening on port: ' + port);
 });
-//middleware will allow for validation
-
-//apply a min and max validation numbers. Gym punch card. Username, class, classes on punch card 0-10
-
-//also need a non crud (random) run-- signin?
