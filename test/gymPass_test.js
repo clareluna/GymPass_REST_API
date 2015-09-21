@@ -20,17 +20,16 @@ describe('the gym membership resource', function() {
 
 	it('should be able to get first name', function(done) {
 		chai.request(url)
-			.get('/gymPass')
+			.get('/signin')
 			.end(function(err, res){
 				expect(err).to.eql(null);
-				expect(Array.isArray(res.body)).to.eql(true); 
 				done();
 		});
 	});
 
 	it('should be able to get a class section', function(done) {
 		chai.request(url)
-			.get('/gymPass')
+			.get('/signin')
 			.end(function(err, res) {
 				expect(err).to.eql(null);
 				expect(Array.isArray(res.body)).to.eql(true);
@@ -39,7 +38,7 @@ describe('the gym membership resource', function() {
 	});
 	it('should be able to create a gym member', function(done) {
 		chai.request(url)
-			.post('/gymPass')
+			.post('/signup')
 			.send({
 				firstName: 'Dexter',
 				classes: 'tennis ball fetching',

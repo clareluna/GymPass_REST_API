@@ -5,8 +5,8 @@ var expect = chai.expect;
 process.env.MONGO_URL = 'mongodb://localhost/gymPass_test';
 require(__dirname + '/../server');
 var mongoose = require('mongoose');
-var Gympass = require(__dirname + '/../models/gympass');
-var eatAuth = require(__dirname + '/../eat_auth');
+var User = require(__dirname + '/../models/user');
+var eatAuth = require(__dirname + '/../lib/eat_auth');
 var httpBasic = require(__dirname + '/../lib/http_basic');
 
 describe ('httpBasic', function() {
@@ -16,6 +16,7 @@ describe ('httpBasic', function() {
 				authorization: 'Basic ' + (new Buffer('test:dexter')).toString('base64') // user = test pass = dexter
 			}
 		};
+
 		httpBasic(req, {}, function() {
 			expect(typeof req.auth).to.eql('object');
 			expect(req.auth.username).to.eql('test');
@@ -26,13 +27,13 @@ describe ('httpBasic', function() {
 
 describe('auth', function() {
 	after(function(done) {
-		mongoose.connection.db.drobDatabase(function() {
+    	mongoose.connection.db.dropDatabase(function() {
 			done();
 		});
 	});
 	it('should be able to create a new member', function() {
 		chai.request('localhost:3000/api')
-			.post('signup')
+			.post('/signup')
 			.send({username: 'tester', password: 'tucker'})
 			.end(function(err, res) {
 				expect(err).to.eql(null);
@@ -44,7 +45,7 @@ describe('auth', function() {
 
 describe('should be able to find member already in database', function() {
 	before(function(done) {
-		var member = new Gympass();
+		var member = new User();
 		member.username = 'test';
 		member.basic.username = 'test';
 		member.generateHash('dexter', function(err, res) {
@@ -64,7 +65,7 @@ describe('should be able to find member already in database', function() {
 			.get('/signin')
 			.auth('test', 'dexter')
 			.end(function(err, res) {
-				expect(err).to.eql.(null);
+				expect(err).to.eql(null);
 				expect(res.body.token).to.have.length.above(0);
 				done();	
 			});
