@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
 mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/gymPass_dev');//database will be named gymPass_dev
-process.env.APP_SECRET = process.env.APP_SECRET || 'changeme' // CHANGE THIS BEFORE TURNING IN, HUGE DATA BREACH
+process.env.APP_SECRET = process.env.APP_SECRET || 
 var gymPassRouter = require(__dirname + '/routes/gymPassRoutes');
 app.use('/api', gymPassRouter);
 
