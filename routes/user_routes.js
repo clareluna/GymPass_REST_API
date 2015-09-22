@@ -8,7 +8,6 @@ var ee = new EventEmitter();
 
 var userRouter = modules.exports = exports = express.Router();
 
-var member = '';
 userRouter.get('/signin', httpBasic, function(req, res){
 	User.findOne({'basic.username': req.auth.username}, function(err, user) {
 		if(err) return handleError(err, res);
@@ -16,22 +15,22 @@ userRouter.get('/signin', httpBasic, function(req, res){
 			console.log('could not authenticate issue here: ' + req.auth.username);
 			return res.status(401).json({msg: 'could not authenticate username'});
 		}
-		ee.emit('compareHashRoute', req, res, member);
+		ee.emit('compareHashRoute', req, res, user);
 	});
 });		
 
-ee.on('compareHashRoute', function(req, res, member) {		
+ee.on('compareHashRoute', function(req, res, user) {		
 	user.compareHash(req.auth.password, function(err, hashReq) {
 		if(err) return handleError(err, res);
 		if(!hashReq) {
 			console.log('could not authenticate: ' + req.auth.username);
 			return res.status(401).json({msg: 'could not authenticate'});
 		}
-		ee.emit('generateTokenRoute', req, res, member);
+		ee.emit('generateTokenRoute', req, res, user);
 	});	
 });
 
-ee.on('generateTokenRoute', function(req, res, member) {
+ee.on('generateTokenRoute', function(req, res, user) {
 	user.generateToken(function(err, token) {
 		if (err) return handleError(err, res);
 		return res.json({token: token});	

@@ -19,7 +19,7 @@ userSchema.methods.generateHash = function(password, callback) {
 };
 
 userSchema.methods.compareHash = function(password, callback) {
-	bycrpt.compare(password, this.basic.password, callback);
+	bcyrpt.compare(password, this.basic.password, callback);
 };
 
 userSchema.methods.generateToken = function(callback) {
