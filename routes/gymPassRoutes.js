@@ -23,7 +23,7 @@ gymPassRoute.post('/signup', jsonParser, function(req, res) {
 
 gymPassRoute.put('/gymPass/:id', jsonParser, function(req,res) {
 	var updateMember = req.body;
-	delete updateMember._id;
+	// delete updateMember._id;
 	GymPass.update({_id: req.params.id}, updateMember, function(err, data) {
 		if (err) return handleError(err, res);
 		res.send(updateMember);

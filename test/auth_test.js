@@ -71,7 +71,7 @@ describe('should be able to find member already in database', function() {
 			});
 	});
 
-	it('should be able to athenticate with eat', function(done) {
+	it('should be able to athenticate with eat', function() {
 		var token = this.token;
 		var req = {
 			headers: {
@@ -79,7 +79,7 @@ describe('should be able to find member already in database', function() {
 			}
 		};
 
-		eatAuth(req, {}, function() {
+		eatAuth(req, {}, function(done) {
 			expect(req.member.username).to.eql('test');
 			done();
 		});
