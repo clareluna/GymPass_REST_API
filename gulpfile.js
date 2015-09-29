@@ -9,12 +9,17 @@ gulp.task('webpack:dev', function() {
 			}
 		}))
 		.pipe(gulp.dest('build/'));
-});
+});		
 
 gulp.task('staticfiles:dev', function() {
-	return gulp.src('.app/**/*.html')
+	return gulp.src('./app/**/*.html')
 		.pipe(gulp.dest('build/'))
+});
+
+gulp.task('watch:build', function() {
+	gulp.watch(['./app/**/*.js', './app/**/*.html'], ['build:dev']);
 });
 
 gulp.task('build:dev', ['staticfiles:dev', 'webpack:dev']);
 gulp.task('default', ['build:dev']);
+
