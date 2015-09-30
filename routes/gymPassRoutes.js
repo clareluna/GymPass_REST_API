@@ -14,6 +14,7 @@ gymPassRoute.get('/signin', function(req, res){
 });
 
 gymPassRoute.post('/signup', jsonParser, function(req, res) {
+	console.log('hit POST /signup with req.body:', req.body)
 	var newMember = new GymPass(req.body);
 	newMember.save(function(err, data) {
 		if (err) handleError(err, data);
@@ -21,11 +22,18 @@ gymPassRoute.post('/signup', jsonParser, function(req, res) {
 	});
 });
 
-gymPassRoute.put('/gymPass/:id', jsonParser, function(req,res) {
+gymPassRoute.put('/gymPass/updateMember/:id', jsonParser, function(req,res) {
 	var updateMember = req.body;
 	delete updateMember._id;
 	GymPass.update({_id: req.params.id}, updateMember, function(err, data) {
 		if (err) return handleError(err, res);
 		res.send(updateMember);
+	});
+});
+
+gymPassRoute.delete('/gymPass/deleteMember/:id', jsonParser, function(req, res) {
+	GymPass.remove({_id: req.params.id}, function(err) {
+		if(err) return handleError(err, res);
+		res.json({msg: 'removed user'});
 	});
 });
