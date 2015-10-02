@@ -3,7 +3,7 @@ module.exports = function(app) {
 		$scope.members = [];
 
 		$scope.getAll = function() {
-			$http.get('api/signin') //same as router routes?
+			$http.get('/api/signin') 
 				.then(function(res) {
 					$scope.members = res.data;
 				}, function(res) {
@@ -13,7 +13,7 @@ module.exports = function(app) {
 
 		$scope.createMember = function(member) {
 			console.log('member', member);
-			$http.post('/api/signup', member) // same as router routes?
+			$http.post('/api/signup', member) 
 				.then(function(res) {
 					$scope.members.push(res.data);
 					$scope.newMember = null;	
@@ -51,9 +51,9 @@ module.exports = function(app) {
 
 		$scope.deleteMember = function(member) {
 			member.status = 'pending';
-			$http.delete('/api/gymPass/deleteMember/', member._id)
-				.then(function() {
-					$scope.members.splice($scope.members.IndexOf(member), 1)
+			$http.delete('/api/gymPass/deleteMember/' + member._id)
+				.then(function(res) {
+					$scope.members.splice($scope.members.indexOf(member), 1)
 				}, function(res) {
 					console.log(res);
 					member.status = 'failed';

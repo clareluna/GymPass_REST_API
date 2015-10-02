@@ -31,7 +31,7 @@ gymPassRoute.put('/gymPass/updateMember/:id', jsonParser, function(req,res) {
 	});
 });
 
-gymPassRoute.delete('/gymPass/deleteMember/:id', jsonParser, function(req, res) {
+gymPassRoute.delete('/gymPass/deleteMember/:id', function(req, res) {
 	GymPass.remove({_id: req.params.id}, function(err) {
 		if(err) return handleError(err, res);
 		res.json({msg: 'removed user'});
