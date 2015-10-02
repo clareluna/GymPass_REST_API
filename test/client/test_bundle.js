@@ -29011,9 +29011,9 @@
 
 			$scope.deleteMember = function(member) {
 				member.status = 'pending';
-				$http.delete('/api/gymPass/deleteMember/', member._id)
-					.then(function() {
-						$scope.members.splice($scope.members.IndexOf(member), 1)
+				$http.delete('/api/gymPass/deleteMember/' + member._id)
+					.then(function(res) {
+						$scope.members.splice($scope.members.indexOf(member), 1)
 					}, function(res) {
 						console.log(res);
 						member.status = 'failed';
