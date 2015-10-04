@@ -51,5 +51,21 @@ describe('gymPass controller', function() {
 			expect($scope.members[0].punchPass).toBe(9);
 			expect($scope.newMember).toBe(null);
 		});
+	
+		it('should be able to update a member', function() {
+			$scope.members[0] = {_id: 7, firstName: 'test member', classes: 'updating files', punchPass:8, status: 'pending', editing:'true'};
+			$httpBackend.expectPUT('/api/gymPass/updateMember/' + $scope.members[0]._id).respond(200);
+			$scope.updateMember($scope.members[0]);
+			$httpBackend.flush();
+			expect($scope.members[0].editing).toBe(false);
+		});
+
+		it('should be ablee to delete a member', function() {
+			$scope.members[0] = {_id: 8, firstName:'deleter', classes:'deleting', punchPass:1, status:'pending', editing: true};
+			$httpBackend.expectDELETE('/api/gymPass/deleteMember/' + $scope.members[0]._id).respond(200);
+			$scope.deleteMember($scope.members[0]);
+			$httpBackend.flush();
+			expect($scope.members[0]).toBe(undefined);
+		})
 	});
 });

@@ -12,7 +12,6 @@ module.exports = function(app) {
 		};
 
 		$scope.createMember = function(member) {
-			console.log('member', member);
 			$http.post('/api/signup', member) 
 				.then(function(res) {
 					$scope.members.push(res.data);
@@ -24,7 +23,7 @@ module.exports = function(app) {
 
 		$scope.updateMember = function(member) {
 			member.status = 'pending';
-			$http.put('/api/gymPass/updateMember/', member._id, member)
+			$http.put('/api/gymPass/updateMember/' + member._id, member)
 				.then(function(res) {
 					delete member.status;
 					member.editing = false;
