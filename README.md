@@ -1,4 +1,4 @@
 SEA D49
 ==================
 
-A REST API capable of handling simple tasks
+A REST API capable of handling a gym membership punchcard
