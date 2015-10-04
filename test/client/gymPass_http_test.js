@@ -66,6 +66,6 @@ describe('gymPass controller', function() {
 			$scope.deleteMember($scope.members[0]);
 			$httpBackend.flush();
 			expect($scope.members[0]).toBe(undefined);
-		})
+		});
 	});
 });
