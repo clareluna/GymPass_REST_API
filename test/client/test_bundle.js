@@ -45,13 +45,14 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(1);
+	__webpack_require__(12);
 
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(2);
-	__webpack_require__(6);
+	__webpack_require__(11);
 
 	describe('gymPass controller', function() {
 	  var $httpBackend;
@@ -118,7 +119,7 @@
 				$scope.deleteMember($scope.members[0]);
 				$httpBackend.flush();
 				expect($scope.members[0]).toBe(undefined);
-			})
+			});
 		});
 	});
 
@@ -130,6 +131,8 @@
 
 	var gymPassApp = angular.module('gymPassApp', []);
 	__webpack_require__(4)(gymPassApp);
+	__webpack_require__(6)(gymPassApp);
+	__webpack_require__(8)(gymPassApp);
 
 /***/ },
 /* 3 */
@@ -28974,40 +28977,103 @@
 /* 5 */
 /***/ function(module, exports) {
 
+	var handleSuccess = function(callback) {
+		return function(res) {
+			callback(null, res.data);
+		};
+	};
+
+	var handleError = function(callback) {
+		return function(data) {
+			callback(data);
+		};
+	};
+
 	module.exports = function(app) {
-		app.controller('gymPassController', ['$scope', '$http', function($scope, $http) {
+		app.factory('Resource', ['$http', function($http) {
+			var Resource = function(resourceName) {
+				this.resourceName = resourceName;
+			};
+
+			Resource.prototype.create = function(member, callback) {
+				$http.post('/api/signup', member)
+					.then(handleSuccess(callback), handleError(callback));
+			};
+
+			Resource.prototype.getAll = function(callback) {
+				$http.get('/api/signin')
+					.then(handleSuccess(callback), handleError(callback));
+			};
+
+			Resource.prototype.update = function(member, callback) {
+				$http.put('/api/gymPass/updateMember/' + member._id, member) 
+					.then(handleSuccess(callback), handleError(callback));
+			};
+
+			Resource.prototype.remove = function(member, callback) {
+				$http.delete('/api/gymPass/deleteMember/' + member._id) 
+					.then(handleSuccess(callback), handleError(callback));
+			};
+
+			return function(resourceName) {
+				return new Resource(resourceName);
+			};
+		}]);
+	};
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(app) {
+		__webpack_require__(7);
+	};
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(app) {
+		__webpack_require__(9)(app);
+		__webpack_require__(10)(app);
+	};
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	module.exports = function(app) {
+		app.controller('gymPassController', ['$scope', 'Resource', function($scope, Resource) {
 			$scope.members = [];
+			var gymPassResource = Resource('members');
+			$scope.description = 'a gym pass mockup app that tracks a user by their first name, class name or number of punches on a punch pass';
 
 			$scope.getAll = function() {
-				$http.get('/api/signin') 
-					.then(function(res) {
-						$scope.members = res.data;
-					}, function(res) {
-						console.log(res);
-					});
+				gymPassResource.getAll(function(err, data) {
+					if(err) return console.log(err);
+					$scope.members = data;
+				});
 			};
 
 			$scope.createMember = function(member) {
-				$http.post('/api/signup', member) 
-					.then(function(res) {
-						$scope.members.push(res.data);
-						$scope.newMember = null;	
-					}, function(res) {
-						console.log(res);
-					});
+				gymPassResource.create(member, function(err, data) {
+					if(err) return console.log(err);
+					$scope.newMember = null;
+					$scope.members.push(data);
+				});
 			};
 
 			$scope.updateMember = function(member) {
-				member.status = 'pending';
-				$http.put('/api/gymPass/updateMember/' + member._id, member)
-					.then(function(res) {
-						delete member.status;
-						member.editing = false;
-					}, function(res) {
-						console.log(res);
-						member.status = 'failed';
-						member.editing = false;
-					});
+				gymPassResource.update(member, function(err) {
+					member.editing = false;
+					if(err) return console.log(err);
+				});
 			};
 
 			$scope.editMember = function(member) {
@@ -29025,20 +29091,42 @@
 			};
 
 			$scope.deleteMember = function(member) {
-				member.status = 'pending';
-				$http.delete('/api/gymPass/deleteMember/' + member._id)
-					.then(function(res) {
-						$scope.members.splice($scope.members.indexOf(member), 1)
-					}, function(res) {
-						console.log(res);
-						member.status = 'failed';
-					});
+				gymPassResource.remove(member, function(err) {
+					if(err) return console.log(err);
+					$scope.members.splice($scope.members.indexOf(member), 1);
+				});
 			};
-		}])
-	}
+		}]);
+	};
 
 /***/ },
-/* 6 */
+/* 10 */
+/***/ function(module, exports) {
+
+	module.exports = function(app) {
+		app.directive('memberForm', function() {
+			return{
+				restrict: 'AC',
+				replace: true,
+				templateUrl: '/templates/members/member_form_template.html',
+				transclude: true,
+				scope: {
+					labelText: '@',
+					buttonText: '@', // sets to directives isolated scope
+					firstName: '=', // creates a two way binding that will make these editable
+					classes: '=',
+					punchPass: '=',
+					save: '&', //passing to the parent scope
+				},
+				controller: function($scope) {
+				console.log($scope.save);
+				}	
+			}
+		});
+	};
+
+/***/ },
+/* 11 */
 /***/ function(module, exports) {
 
 	/**
@@ -31512,6 +31600,85 @@
 
 	})(window, window.angular);
 
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(2); //pulls all controller, directive and services in
+
+	describe('rest services', function() {
+		beforeEach(angular.mock.module('gymPassApp'));
+
+		var RESTService;
+		var $httpBackend;
+		var gymPassResource;
+
+		beforeEach(angular.mock.inject(function(Resource, _$httpBackend_) {
+			RESTService = Resource;
+			$httpBackend = _$httpBackend_;
+			gymPassResource = RESTService('members'); //passing members array into REST Service constructor
+		}));
+
+		afterEach(function() {
+	    $httpBackend.verifyNoOutstandingExpectation();
+	    $httpBackend.verifyNoOutstandingRequest();		
+		});
+
+		it('should be able to make get requests', function() {
+			$httpBackend.expectGET('/api/signin').respond(200, [{firstName: 'testTucker', classes: 'barking', punchPass: 5}]);
+			gymPassResource.getAll(function(err, data) {
+				expect(err).toBe(null);
+				expect(Array.isArray(data)).toBe(true);
+			});
+			$httpBackend.flush();
+		});
+
+		it('should be able to make post requests', function() {
+			var testTucker= {
+				_id: 1,
+				firstName: 'testTucker',
+				classes: 'people watching',
+				punchPass: 6
+			};	
+			$httpBackend.expectPOST('/api/signup', testTucker).respond(200, {_id:4, firstName:'dexterDog', classes: 'neighborhood watch', punchPass: 5});
+			gymPassResource.create(testTucker, function(err, data) {
+				expect(err).toBe(null);
+				expect(data.firstName).toBe('dexterDog');
+				expect(data.classes).toBe('neighborhood watch');
+				expect(data.punchPass).toBe(5);
+			});
+			$httpBackend.flush();
+		});	
+
+		it('should be able to edit a member', function() {
+			var testTucker= {
+				_id: 55,
+				firstName: 'testTucker',
+				classes: 'digging holes',
+				punchPass: 10
+			};
+			$httpBackend.expectPUT('/api/gymPass/updateMember/' + testTucker._id, testTucker).respond(200);
+			gymPassResource.update(testTucker, function(err) {
+				expect(err).toBe(null);
+			});
+			$httpBackend.flush();
+		});
+
+		it('should be able to delete a member', function() {
+			var noGoodCat = {
+				_id: 666,
+				firstName: 'Sylvester',
+				classes: 'clawing faces',
+				punchPass: 1
+			};
+			$httpBackend.expectDELETE('/api/gymPass/deleteMember/' + noGoodCat._id).respond(200);
+			gymPassResource.remove(noGoodCat, function(err) {
+				expect(err).toBe(null);
+			});
+			$httpBackend.flush();
+		});
+	});
 
 /***/ }
 /******/ ]);

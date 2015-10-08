@@ -1,37 +1,29 @@
 module.exports = function(app) {
-	app.controller('gymPassController', ['$scope', '$http', function($scope, $http) {
+	app.controller('gymPassController', ['$scope', 'Resource', function($scope, Resource) {
 		$scope.members = [];
+		var gymPassResource = Resource('members');
+		$scope.description = 'a gym pass mockup app that tracks a user by their first name, class name or number of punches on a punch pass';
 
 		$scope.getAll = function() {
-			$http.get('/api/signin') 
-				.then(function(res) {
-					$scope.members = res.data;
-				}, function(res) {
-					console.log(res);
-				});
+			gymPassResource.getAll(function(err, data) {
+				if(err) return console.log(err);
+				$scope.members = data;
+			});
 		};
 
 		$scope.createMember = function(member) {
-			$http.post('/api/signup', member) 
-				.then(function(res) {
-					$scope.members.push(res.data);
-					$scope.newMember = null;	
-				}, function(res) {
-					console.log(res);
-				});
+			gymPassResource.create(member, function(err, data) {
+				if(err) return console.log(err);
+				$scope.newMember = null;
+				$scope.members.push(data);
+			});
 		};
 
 		$scope.updateMember = function(member) {
-			member.status = 'pending';
-			$http.put('/api/gymPass/updateMember/' + member._id, member)
-				.then(function(res) {
-					delete member.status;
-					member.editing = false;
-				}, function(res) {
-					console.log(res);
-					member.status = 'failed';
-					member.editing = false;
-				});
+			gymPassResource.update(member, function(err) {
+				member.editing = false;
+				if(err) return console.log(err);
+			});
 		};
 
 		$scope.editMember = function(member) {
@@ -49,14 +41,10 @@ module.exports = function(app) {
 		};
 
 		$scope.deleteMember = function(member) {
-			member.status = 'pending';
-			$http.delete('/api/gymPass/deleteMember/' + member._id)
-				.then(function(res) {
-					$scope.members.splice($scope.members.indexOf(member), 1)
-				}, function(res) {
-					console.log(res);
-					member.status = 'failed';
-				});
+			gymPassResource.remove(member, function(err) {
+				if(err) return console.log(err);
+				$scope.members.splice($scope.members.indexOf(member), 1);
+			});
 		};
-	}])
-}
+	}]);
+};
