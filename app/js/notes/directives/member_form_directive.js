@@ -5,7 +5,7 @@ module.exports = function(app) {
 			replace: true,
 			templateUrl: '/templates/members/member_form_template.html',
 			transclude: true,
-			scope: {
+			scope:{
 				labelText: '@',
 				buttonText: '@', // sets to directives isolated scope
 				firstName: '=', // creates a two way binding that will make these editable
