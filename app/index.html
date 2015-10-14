@@ -5,6 +5,10 @@
 	<title></title>
 </head>
 <body data-ng-app="gymPassApp">
+	<a data-ng-if="loggedIn()" href data-ng-click="logOut()">Log Out{{username? ' of ' + username: ''}}</a>
+
+
+	
 	<main data-ng-controller="gymPassController" data-ng-init="getAll()"> 
 		<h3>Welcome to a simple app that has a database structure to handle user name, gym class selection, and gym pass punch card. This site is under construction, so check back soon to pump some iron.</h3>	
 		<h1>Epic Gym Members:</h1>

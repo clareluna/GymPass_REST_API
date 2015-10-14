@@ -14,7 +14,6 @@ gymPassRoute.get('/signin', function(req, res){
 });
 
 gymPassRoute.post('/signup', jsonParser, function(req, res) {
-	console.log('hit POST /signup with req.body:', req.body)
 	var newMember = new GymPass(req.body);
 	newMember.save(function(err, data) {
 		if (err) handleError(err, data);
