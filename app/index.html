@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title></title>
+</head>
+<body data-ng-app="gymPassApp">
+	<a data-ng-if="loggedIn()" href data-ng-click="logOut()">Log Out{{username? ' of ' + username: ''}}</a>
+
+
+	
+	<main data-ng-controller="gymPassController" data-ng-init="getAll()"> 
+		<h3>Welcome to a simple app that has a database structure to handle user name, gym class selection, and gym pass punch card. This site is under construction, so check back soon to pump some iron.</h3>	
+		<h1>Epic Gym Members:</h1>
+		<form name="newMemberForm" data-ng-submit="createMember(newMember)">
+			<label for="firstName">New Member:
+				<input type="text" placeholder="first name" required data-ng-model="newMember.firstName">
+				<input type="text" placeholder="class choice" required data-ng-model="newMember.classes">
+				<input type="text" placeholder="number of punches" required data-ng-model="newMember.punchPass">
+			</label>
+      <button type="submit" data-ng-disabled="newMemberForm.$invalid">Add Member</button>
+		</form>
+		
+		<ul id="memberList">
+			<li class="{{member.status}}" data-ng-repeat="member in members">
+			<span data-ng-if="!member.editing">	
+				Name: {{member.firstName}}<br>
+				class: {{member.classes}}<br>
+				punchPass: {{member.punchPass}}		
+				<button data-ng-click="editMember(member)">Edit</button>
+				<button data-ng-click="deleteMember(member)">Delete</button>
+			</span>	
+			<form data-ng-if="member.editing" name="{{'memberForm' + member._id}}" data-ng-submit="updateMember(member)">
+				<input type="text" data-ng-model="member.firstName">
+				<input type="text" data-ng-model="member.classes">
+				<input type="text" data-ng-model="member.punchPass">
+				<button type="submit">Save</button>
+			</form>
+			<button data-ng-if="member.editing" data-ng-click="cancelUpdate(member)">Cancel</button>			
+			</li>
+		</ul>
+	</main>	
+
+	<script src="bundle.js"></script>
+</body>
+</html>
+
