@@ -13,6 +13,11 @@ gulp.task('webpack:dev', function() {
 		.pipe(gulp.dest('build/'));
 });	
 
+gulp.task('build:css', function() {
+	gulp.src('./app/style/index.css')
+		.pipe(gulp.dest('build/style/'))
+})
+
 gulp.task('webpack:test', function() {
 	return gulp.src('./test/client/entry.js')
 		.pipe(webpack({

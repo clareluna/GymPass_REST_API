@@ -5,6 +5,7 @@ mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/gymPass_dev');//d
 
 app.use(express.static(__dirname + '/build'));
 var gymPassRouter = require(__dirname + '/routes/gymPassRoutes');
+var userRouter = require(__dirname + '/routes/usersRoutes');
 app.use('/api', gymPassRouter);
 app.use('/api', userRouter);
 
